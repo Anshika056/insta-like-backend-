@@ -16,7 +16,7 @@ exports.signup=async (req,res)=>{
       const newuser = new user({username,email,password})
       
       const token = jwt.sign({                                        //generation of token
-        id:finduser._id
+        id:user._id
        },process.env.SECRET_KEY, {expiresIn:"1d"})
 
       const theUser=await newuser.save()
