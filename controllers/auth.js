@@ -1,7 +1,7 @@
 const user = require("../models/userSchema");
 const validator = require("validator");
 const bcrypt = require("bcrypt");
-
+const jwt= require("jsonwebtoken")
 
 //user register
 exports.signup=async (req,res)=>{
@@ -14,8 +14,13 @@ exports.signup=async (req,res)=>{
           return res.status(400).json("invaild email")
       }
       const newuser = new user({username,email,password})
+      
+      const token = jwt.sign({                                        //generation of token
+        id:finduser._id
+       },process.env.SECRET_KEY, {expiresIn:"1d"})
+
       const theUser=await newuser.save()
-      console.log(theUser);
+      console.log(theUser,token);
       res.status(200).send("User Signedup")
     }catch(err){
         console.log(err)
@@ -44,7 +49,11 @@ exports.login=async(req,res)=>{
       if(!compass){
         return res.status(400).json("Invaild details")
     }
-    res.status(200).json("Signed in")
+    const token = jwt.sign({                                        //generation of token
+      id:User._id
+     },process.env.SECRET_KEY, {expiresIn:"1d"})
+
+    res.status(200).json({user:User,token});
     console.log(User)
      
   }
