@@ -49,12 +49,13 @@ exports.deleteduser = async (req,res)=>{
 exports.followuser = async (req,res)=>{
     if(req.body.userid !== req.params.id){
     try{ 
-        const usertofollow = await user.findById(req.params.id)
+        const usertofollow = await user.findById(req.params.id).populate("followers")
         const userfollowing = await user.findById(req.body.userid)
+        datatoshow =[]
         if(!usertofollow.followers.includes(req.body.userid)){
            const follow = await usertofollow.updateOne({$push:{followers:req.body.userid}})
            const following = await userfollowing.updateOne({$push:{followings:req.params.id}})
-           res.status(200).json({userfollowed:usertofollow,userfollowing:userfollowing})
+           res.status(200).json({userfollowed:usertofollow})
         }else{
             res.send("you are already following")
         }
