@@ -1,4 +1,3 @@
-const { updateOne } = require("../models/userSchema");
 const user = require("../models/userSchema");
 
 exports.updateuser = async (req,res)=>{
@@ -33,7 +32,8 @@ exports.deleteduser = async (req,res)=>{
     try{
       const {id} = req.params
       if(req.body.userid === id){
-           const deleteduser = await user.findByIdAndDelete({id});
+           const deleteduser = await user.findByIdAndDelete(id);
+           console.log(deleteduser)
            if(!deleteduser)
            res.status(400).json("not deleted")
            res.status(200).json("user deleted")
@@ -41,32 +41,36 @@ exports.deleteduser = async (req,res)=>{
           res.send("you can only delete your account")
       }
     }catch(err){
+      console.log(err)
         res.status(400).json("user not deleted");
     }
 }
 
 
-exports.followuser = async (req,res)=>{
-    if(req.body.userid !== req.params.id){
-    try{ 
-        const usertofollow = await user.findById(req.params.id).populate("followers")
-        const userfollowing = await user.findById(req.body.userid)
-        datatoshow =[]
-        if(!usertofollow.followers.includes(req.body.userid)){
-           const follow = await usertofollow.updateOne({$push:{followers:req.body.userid}})
-           const following = await userfollowing.updateOne({$push:{followings:req.params.id}})
-           res.status(200).json({userfollowed:usertofollow})
-        }else{
-            res.send("you are already following")
-        }
-
-    }catch(err){
-        res.status(400).json("something went wrong")
+exports.followuser = async (req, res) => {
+  if (req.body.userid !== req.params.id) {
+    try {
+      const usertofollow = await user.findById(req.params.id);
+      const usertofollowing = await user.findById(req.body.userid);
+      datatosend=[]
+      if (!usertofollow.followers.includes(req.body.userid)) {
+        await usertofollow.updateOne({ $push: { followers:req.body.userid}});
+        await usertofollowing.updateOne({ $push: { followings: req.params.id } });
+        console.log(datatosend)
+        res.status(200).json(datatosend);
+      } else {
+        res.status(403).json("you already follow this user");
+      }
+    } catch (err) {
+      console.log(err)
+      res.status(500).json(err);
     }
-}else{
-    res.send("you cannot follow yourself");
-}
-}
+  } else {
+    res.status(403).json("you cant follow yourself");
+  }
+};
+
+
 
 exports.unfollowuser = async (req, res) => {
     if (req.body.userid !== req.params.id) {
