@@ -9,13 +9,21 @@ const postSchema = new mongoose.Schema({
         type:String
     },
     caption:{
-        type:string
+        type:String
     },
     likes:{
         type:Array,
         default:[]
-    }
-},{timestamps:true});
+    },
+    comment:{
+        type:[String],
+        default:[]
+    },
+    createdAt: {
+        type: Date,
+        default: new Date(),
+    },
+});
 
 
 module.exports=mongoose.model("posts",postSchema);

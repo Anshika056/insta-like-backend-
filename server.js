@@ -7,6 +7,7 @@ require("./database/connect")
 
 const authroutes = require("./routes/user");
 const usersroutes = require("./routes/users");
+const postroutes = require("./routes/post")
 
 
 app.use(express.json());
@@ -19,8 +20,10 @@ app.get("/",(req,res)=>{
     res.send("hello!")
 })
 
-app.use("/api",authroutes)
+app.use("/api",authroutes);
 app.use("/api",usersroutes);
+
+app.use("/api",postroutes)
 
 app.listen(port,()=>{
     console.log(`listening to server at ${port}`);
