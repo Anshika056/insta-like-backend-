@@ -22,7 +22,6 @@ app.get("/",(req,res)=>{
 
 app.use("/api",authroutes);
 app.use("/api",usersroutes);
-
 app.use("/api",postroutes)
 
 app.listen(port,()=>{
